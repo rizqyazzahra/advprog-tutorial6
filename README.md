@@ -24,3 +24,8 @@ Refactoring tersebut diperlukan untuk membuat server lebih fleksibel dalam menan
 
 ### Commit 4 Reflection notes
 Pada kode yang telah diperbarui, fungsi `handle_connection` kini mensimulasikan _slow response_ dengan menambahkan kasus khusus untuk path `/sleep`. Ketika server menerima permintaan HTTP dengan path `/sleep`, ia akan menunda eksekusi selama 5 detik menggunakan `thread::sleep(Duration::from_secs(5));`. Baru setelah jeda waktu tersebut, server akan tetap mengembalikan status "200 OK" dan menampilkan konten dari file `hello.html`. Simulasi respons lambat ini membantu memahami bagaimana server menangani permintaan yang mungkin membutuhkan waktu pemrosesan lebih lama, seperti operasi berat atau pengambilan data dari sumber eksternal.
+
+### Commit 5 Reflection notes
+Implementasi ThreadPool yang dilakukan memungkinkan server untuk menangani beberapa koneksi _client_ secara paralel dengan lebih efisien. Daripada membuat thread baru untuk setiap permintaan yang masuk, server menggunakan sejumlah thread tetap, sesuai ukuran `size` yang ditentukan saat inisialisasi. Setiap worker dalam pool memiliki thread sendiri yang terus mendengarkan pekerjaan (`job`) dari channel (`mpsc::channel()`) menggunakan kombinasi Arc dan Mutex untuk sinkronisasi. Ketika ada pekerjaan baru, salah satu worker mengambilnya dan mengeksekusinya.
+
+Penggunaan ThreadPool ini bermanfaat untuk membantu menghindari masalah _overhead_ karena pembuatan dan penghancuran thread yang berlebihan serta mencegah _overload_ jika terlalu banyak koneksi yang masuk secara bersamaan. Dengan membatasi jumlah worker, server dapat memaksimalkan penggunaan _resource_ tanpa membuat sistem kewalahan.
