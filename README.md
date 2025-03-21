@@ -21,3 +21,6 @@ Pemisahan respons dilakukan dengan cara membaca baris pertama dari permintaan HT
 Refactoring tersebut diperlukan untuk membuat server lebih fleksibel dalam menangani berbagai jenis permintaan. Selain itu, untuk mempermudah pengelolaan file dan memungkinkan pengembangan lebih lanjut, seperti menambah _endpoint_ baru atau menangani metode HTTP lainnya di masa depan. 
 
 ![Commit 3 screen capture](/assets/images/commit3.png)
+
+### Commit 4 Reflection notes
+Pada kode yang telah diperbarui, fungsi `handle_connection` kini mensimulasikan _slow response_ dengan menambahkan kasus khusus untuk path `/sleep`. Ketika server menerima permintaan HTTP dengan path `/sleep`, ia akan menunda eksekusi selama 5 detik menggunakan `thread::sleep(Duration::from_secs(5));`. Baru setelah jeda waktu tersebut, server akan tetap mengembalikan status "200 OK" dan menampilkan konten dari file `hello.html`. Simulasi respons lambat ini membantu memahami bagaimana server menangani permintaan yang mungkin membutuhkan waktu pemrosesan lebih lama, seperti operasi berat atau pengambilan data dari sumber eksternal.
